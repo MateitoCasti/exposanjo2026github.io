@@ -389,33 +389,60 @@
 
     let projects = JSON.parse(localStorage.getItem('expolab_projects')) || defaultProjects;
     let isExpoMode = false;
-    let userPlaylist = [];
+
+    // Intentar recuperar los videos guardados en almacenamiento local
+    let savedPlaylist = JSON.parse(localStorage.getItem('expolab_videos')) || [
+      { src: 'video/video1.mp4', title: 'Video Expo 1', sub: 'Carpeta local video/' },
+      { src: 'video/video2.mp4', title: 'Video Expo 2', sub: 'Carpeta local video/' }
+    ];
+    let userPlaylist = savedPlaylist;
     let currentVideoIdx = 0;
 
-    // Manejo de Carga de Videos
+    // Guardado de videos en almacenamiento local mediante lecturas Base64
     function handleVideoUpload(e) {
       const files = Array.from(e.target.files);
       if (!files.length) return;
 
-      userPlaylist = files.map((file, i) => ({
-        src: URL.createObjectURL(file),
-        title: file.name,
-        sub: `Video ${i + 1} de ${files.length}`
-      }));
+      userPlaylist = [];
+      let loaded = 0;
 
-      currentVideoIdx = 0;
-      document.getElementById('noVideoOverlay').style.display = 'none';
-      initVideoPlayer();
+      files.forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          userPlaylist.push({
+            src: event.target.result,
+            title: file.name,
+            sub: `Video ${index + 1} de ${files.length}`
+          });
+          loaded++;
+
+          if (loaded === files.length) {
+            try {
+              localStorage.setItem('expolab_videos', JSON.stringify(userPlaylist));
+            } catch (err) {
+              console.warn("El video es demasiado pesado para guardarse permanentemente en el navegador. Se reproducirá durante esta sesión.");
+            }
+            currentVideoIdx = 0;
+            const overlay = document.getElementById('noVideoOverlay');
+            if (overlay) overlay.style.display = 'none';
+            initVideoPlayer();
+          }
+        };
+        reader.readAsDataURL(file);
+      });
     }
 
     function initVideoPlayer() {
       const player = document.getElementById('heroVideoDisplay');
+      const overlay = document.getElementById('noVideoOverlay');
+
       if (userPlaylist.length > 0) {
+        if (overlay) overlay.style.display = 'none';
         player.src = userPlaylist[currentVideoIdx].src;
-        document.getElementById('videoTitle').textContent = userPlaylist[currentVideoIdx].title;
-        document.getElementById('videoSub').textContent = userPlaylist[currentVideoIdx].sub;
+        document.getElementById('videoTitle').textContent = userPlaylist[currentVideoIdx].title || 'Video Expo';
+        document.getElementById('videoSub').textContent = userPlaylist[currentVideoIdx].sub || 'Reproducción en bucle';
         player.muted = true;
-        player.play().catch(err => console.log("Error al reproducir:", err));
+        player.play().catch(err => console.log("Error de autoplay:", err));
       }
     }
 
@@ -581,6 +608,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       renderProjects();
       renderGallery();
+      initVideoPlayer();
     });
   </script>
 </body>
