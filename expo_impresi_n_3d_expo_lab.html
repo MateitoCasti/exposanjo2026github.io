@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b14">
+  <title>EXPO LAB | Impresión 3D Escolar</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#080b14',
+              card: '#0d1322',
+              cyan: '#62e4ff',
+              purple: '#9c7bff',
+              green: '#7bf0c3',
+              line: 'rgba(155, 174, 209, 0.16)'
+            }
+          },
+          fontFamily: {
+            heading: ['Space Grotesk', 'sans-serif'],
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #080b14; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #62e4ff; }
+
+    .glow-cyan { box-shadow: 0 0 25px rgba(98, 228, 255, 0.25); }
+    .glow-purple { box-shadow: 0 0 25px rgba(156, 123, 255, 0.25); }
+    .text-gradient {
+      background: linear-gradient(100deg, #62e4ff, #a5b8ff 55%, #c09aff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .bg-glass {
+      background: rgba(13, 19, 34, 0.75);
+      backdrop-filter: blur(16px);
+    }
+    .orbit-animation { animation: spin 35s linear infinite; }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="bg-brand-dark text-slate-100 font-sans min-h-screen selection:bg-brand-cyan/30 selection:text-brand-cyan overflow-x-hidden">
+
+  <header class="sticky top-0 z-40 w-full border-b border-brand-line bg-brand-dark/80 backdrop-blur-md transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <a href="#inicio" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-cyan to-blue-600 flex items-center justify-center font-heading font-extrabold text-slate-950 text-base glow-cyan transition-transform group-hover:scale-105">
+          3D
+        </div>
+        <span class="font-heading font-extrabold text-lg tracking-wider">
+          EXPO<span class="text-brand-cyan">LAB</span>
+        </span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-8 text-xs font-semibold text-slate-300">
+        <a href="#proyectos" class="hover:text-brand-cyan transition-colors">Proyectos</a>
+        <a href="#galeria" class="hover:text-brand-cyan transition-colors">Galería</a>
+        <a href="#aplicaciones" class="hover:text-brand-cyan transition-colors">Aplicaciones</a>
+        <a href="#proceso" class="hover:text-brand-cyan transition-colors">Proceso 3D</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <button id="toggleExpoModeBtn" onclick="toggleExpoMode()" class="px-3 py-2 text-xs font-bold rounded-lg border border-brand-cyan/40 text-brand-cyan hover:bg-brand-cyan/10 transition-all flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-brand-green animate-pulse"></span>
+          <span id="expoModeText">Modo Presentación</span>
+        </button>
+
+        <button onclick="openImageManager()" class="edit-control px-4 py-2 text-xs font-bold rounded-lg bg-gradient-to-r from-brand-cyan to-blue-500 text-slate-950 hover:shadow-lg hover:shadow-brand-cyan/20 transition-all transform hover:-translate-y-0.5">
+          📷 Subir / Editar Fotos
+        </button>
+
+        <button id="mobileMenuBtn" onclick="toggleMobileNav()" class="md:hidden p-2 text-slate-300 hover:text-white" aria-label="Abrir Menú">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+        </button>
+      </div>
+    </div>
+
+    <div id="mobileNav" class="hidden md:hidden border-b border-brand-line bg-brand-card/95 px-4 pt-2 pb-4 space-y-3 text-sm">
+      <a href="#proyectos" onclick="toggleMobileNav()" class="block text-slate-300 hover:text-brand-cyan">Proyectos</a>
+      <a href="#galeria" onclick="toggleMobileNav()" class="block text-slate-300 hover:text-brand-cyan">Galería de Alumnos</a>
+      <a href="#aplicaciones" onclick="toggleMobileNav()" class="block text-slate-300 hover:text-brand-cyan">Aplicaciones</a>
+      <a href="#proceso" onclick="toggleMobileNav()" class="block text-slate-300 hover:text-brand-cyan">¿Cómo funciona?</a>
+    </div>
+  </header>
+
+  <main id="inicio">
+    <section class="relative min-h-[85vh] flex items-center justify-center pt-12 pb-20 overflow-hidden">
+      <div class="absolute top-1/4 -left-32 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute bottom-10 -right-32 w-96 h-96 bg-brand-purple/20 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+        <div class="space-y-6 text-left">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-green/30 bg-brand-green/10 text-brand-green text-xs font-bold tracking-widest uppercase">
+            <span class="w-2 h-2 rounded-full bg-brand-green animate-ping"></span>
+            EXPO ESCOLAR · IMPRESIÓN 3D
+          </div>
+          
+          <h1 class="font-heading font-extrabold text-5xl sm:text-6xl lg:text-7xl tracking-tight leading-tight">
+            Ideas que toman <br>
+            <span class="text-gradient">forma real.</span>
+          </h1>
+
+          <p class="text-slate-400 text-base sm:text-lg leading-relaxed max-w-xl">
+            De un boceto digital a un objeto que podés tocar. Conocé las maquetas, piezas funcionales y proyectos diseñados por nuestros estudiantes.
+          </p>
+
+          <div class="flex flex-wrap gap-4 pt-2">
+            <a href="#proyectos" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-brand-cyan to-blue-500 text-slate-950 font-bold text-sm hover:shadow-xl hover:shadow-brand-cyan/20 transition-all transform hover:-translate-y-0.5">
+              Ver Proyectos ↓
+            </a>
+            <a href="#galeria" class="px-6 py-3.5 rounded-xl border border-brand-line bg-slate-900/40 text-slate-200 font-bold text-sm hover:border-brand-cyan/50 hover:text-brand-cyan transition-all">
+              Galería Visual ↗
+            </a>
+          </div>
+
+          <div class="pt-8 border-t border-brand-line/60 grid grid-cols-3 gap-4 text-center sm:text-left">
+            <div>
+              <p class="font-heading font-bold text-2xl text-white">01</p>
+              <p class="text-slate-400 text-xs">Imaginación</p>
+            </div>
+            <div>
+              <p class="font-heading font-bold text-2xl text-white">02</p>
+              <p class="text-slate-400 text-xs">Diseño CAD</p>
+            </div>
+            <div>
+              <p class="font-heading font-bold text-2xl text-brand-cyan">03</p>
+              <p class="text-slate-400 text-xs">Pieza Final</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- REPRODUCTOR DE VIDEOS / PLAYLIST DE LA HERO SECTION -->
+        <div class="relative flex justify-center items-center">
+          <div class="absolute w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] border border-brand-cyan/20 rounded-full orbit-animation pointer-events-none"></div>
+          
+          <div class="relative z-10 w-full max-w-md aspect-[4/3] rounded-2xl p-2 bg-gradient-to-br from-brand-cyan/30 via-brand-purple/20 to-transparent border border-brand-cyan/40 shadow-2xl overflow-hidden group">
+            
+            <!-- Video Player -->
+            <video id="heroVideoDisplay" autoplay muted playsinline class="w-full h-full object-cover rounded-xl transition-all duration-500" onended="playNextVideo()"></video>
+            
+            <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/80 via-transparent to-transparent pointer-events-none"></div>
+            
+            <!-- Botón para Cargar Videos -->
+            <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/ogg" multiple class="hidden" onchange="handleVideoUpload(event)">
+            <button onclick="document.getElementById('videoFileInput').click()" class="edit-control absolute top-4 right-4 p-2 bg-brand-dark/80 hover:bg-brand-cyan hover:text-slate-950 text-white rounded-lg backdrop-blur-md text-xs font-bold transition-all shadow-md z-20">
+              🎬 Cargar Videos / Playlist
+            </button>
+
+            <!-- Indicador / Título del Video Actual -->
+            <div class="absolute bottom-4 left-4 right-4 p-3 rounded-xl bg-brand-card/90 border border-brand-line backdrop-blur-md flex items-center justify-between z-20">
+              <div>
+                <p id="videoTitle" class="text-xs font-bold text-brand-cyan">VIDEO 1 / PLAYLIST</p>
+                <p id="videoSub" class="text-xs text-slate-300">Procesos e Impresión en vivo</p>
+              </div>
+              <div class="flex items-center gap-1 edit-control">
+                <button onclick="prevVideo()" class="p-1.5 bg-slate-800 hover:bg-brand-cyan hover:text-black rounded text-xs">◀</button>
+                <button onclick="nextVideo()" class="p-1.5 bg-slate-800 hover:bg-brand-cyan hover:text-black rounded text-xs">▶</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="proyectos" class="py-20 border-t border-brand-line/50 relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+          <div>
+            <span class="text-brand-cyan text-xs font-bold tracking-widest uppercase">HECHO EN EL AULA</span>
+            <h2 class="font-heading font-extrabold text-3xl sm:text-4xl mt-2">Proyectos Destacados</h2>
+          </div>
+          
+          <div class="flex flex-wrap gap-2">
+            <button onclick="filterProjects('todos', event)" class="filter-btn active px-4 py-2 rounded-lg border border-brand-cyan bg-brand-cyan/10 text-brand-cyan text-xs font-bold transition-all">Todos</button>
+            <button onclick="filterProjects('creatividad', event)" class="filter-btn px-4 py-2 rounded-lg border border-brand-line text-slate-400 text-xs font-bold hover:border-brand-cyan hover:text-brand-cyan transition-all">Creatividad</button>
+            <button onclick="filterProjects('funcional', event)" class="filter-btn px-4 py-2 rounded-lg border border-brand-line text-slate-400 text-xs font-bold hover:border-brand-cyan hover:text-brand-cyan transition-all">Piezas Funcionales</button>
+            <button onclick="filterProjects('educacion', event)" class="filter-btn px-4 py-2 rounded-lg border border-brand-line text-slate-400 text-xs font-bold hover:border-brand-cyan hover:text-brand-cyan transition-all">Educación</button>
+          </div>
+        </div>
+
+        <div id="projectGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </div>
+    </section>
+
+    <section id="galeria" class="py-20 bg-slate-950/50 border-t border-brand-line/50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <span class="text-brand-purple text-xs font-bold tracking-widest uppercase">NUESTROS CREADORES</span>
+          <h2 class="font-heading font-extrabold text-3xl sm:text-4xl mt-2">Galería de Alumnos</h2>
+          <p class="text-slate-400 text-sm mt-3">Un recorrido gráfico por las ideas, prototipos y piezas finales creadas por los estudiantes.</p>
+        </div>
+
+        <div id="galleryGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+      </div>
+    </section>
+
+    <section id="aplicaciones" class="py-20 border-t border-brand-line/50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <span class="text-brand-green text-xs font-bold tracking-widest uppercase">MÁS ALLÁ DEL AULA</span>
+          <h2 class="font-heading font-extrabold text-3xl sm:text-4xl mt-2">Aplicaciones en la Vida Real</h2>
+          <p class="text-slate-400 text-sm mt-3">La impresión 3D no es solo para juguetes; es la tecnología que impulsa la ciencia, la medicina y la industria actual.</p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="p-6 rounded-2xl bg-brand-card border border-brand-line hover:border-brand-cyan/40 transition-all group">
+            <div class="w-12 h-12 rounded-xl bg-brand-cyan/10 text-brand-cyan flex items-center justify-center font-bold text-2xl mb-4 group-hover:scale-110 transition-transform">✚</div>
+            <span class="text-slate-500 text-[10px] font-bold tracking-widest">01 / SALUD</span>
+            <h3 class="font-heading font-bold text-xl text-white mt-1 mb-2">Medicina y Prótesis</h3>
+            <p class="text-slate-400 text-xs leading-relaxed">Modelos anatómicos preoperatorios, guías quirúrgicas y prótesis totalmente personalizadas para cada paciente.</p>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-brand-card border border-brand-line hover:border-brand-purple/40 transition-all group">
+            <div class="w-12 h-12 rounded-xl bg-brand-purple/10 text-brand-purple flex items-center justify-center font-bold text-2xl mb-4 group-hover:scale-110 transition-transform">⚙️</div>
+            <span class="text-slate-500 text-[10px] font-bold tracking-widest">02 / INDUSTRIA</span>
+            <h3 class="font-heading font-bold text-xl text-white mt-1 mb-2">Ingeniería e Industria</h3>
+            <p class="text-slate-400 text-xs leading-relaxed">Prototipado rápido de componentes mecanizados, soporte de herramientas y piezas de reemplazo para maquinarias.</p>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-brand-card border border-brand-line hover:border-brand-green/40 transition-all group">
+            <div class="w-12 h-12 rounded-xl bg-brand-green/10 text-brand-green flex items-center justify-center font-bold text-2xl mb-4 group-hover:scale-110 transition-transform">🏛️</div>
+            <span class="text-slate-500 text-[10px] font-bold tracking-widest">03 / ARQUITECTURA</span>
+            <h3 class="font-heading font-bold text-xl text-white mt-1 mb-2">Arquitectura y Diseño</h3>
+            <p class="text-slate-400 text-xs leading-relaxed">Maquetas tridimensionales ultra detalladas y estructuras complejas imposibles de fabricar con métodos tradicionales.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="proceso" class="py-20 bg-slate-950/60 border-t border-brand-line/50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <span class="text-brand-cyan text-xs font-bold tracking-widest uppercase">DEL PIXEL A LA PIEZA</span>
+          <h2 class="font-heading font-extrabold text-3xl sm:text-4xl mt-2">¿Cómo funciona el proceso?</h2>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+          <div class="p-6 rounded-2xl bg-brand-card/80 border border-brand-line relative">
+            <span class="font-heading font-extrabold text-4xl text-brand-cyan/20 absolute top-4 right-4">01</span>
+            <div class="text-brand-cyan font-bold text-lg mb-2">1. Diseño CAD</div>
+            <p class="text-slate-400 text-xs leading-relaxed">Creamos la idea tridimensional en la computadora mediante software especializado (Tinkercad, Fusion360, etc.).</p>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-brand-card/80 border border-brand-line relative">
+            <span class="font-heading font-extrabold text-4xl text-brand-cyan/20 absolute top-4 right-4">02</span>
+            <div class="text-brand-cyan font-bold text-lg mb-2">2. Laminado (Slicing)</div>
+            <p class="text-slate-400 text-xs leading-relaxed">El software dividirá el modelo 3D en cientos de capas horizontales delgadas y generará el código de corte (G-Code).</p>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-brand-card/80 border border-brand-line relative">
+            <span class="font-heading font-extrabold text-4xl text-brand-cyan/20 absolute top-4 right-4">03</span>
+            <div class="text-brand-cyan font-bold text-lg mb-2">3. Impresión</div>
+            <p class="text-slate-400 text-xs leading-relaxed">La máquina calienta el filamento plástico (PLA/PETG) y deposita capa por capa con extrema precisión sobre la cama de impresión.</p>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-brand-card/80 border border-brand-line relative">
+            <span class="font-heading font-extrabold text-4xl text-brand-cyan/20 absolute top-4 right-4">04</span>
+            <div class="text-brand-cyan font-bold text-lg mb-2">4. Acabado</div>
+            <p class="text-slate-400 text-xs leading-relaxed">Se retiran soportes auxiliares, se realiza lija fina o curado para dejar la pieza lista para su uso real.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-brand-line py-10 bg-brand-dark">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-brand-cyan/20 text-brand-cyan flex items-center justify-center font-bold">3D</div>
+        <span class="font-heading font-bold text-white text-sm">EXPO LAB</span>
+      </div>
+      <p>© Muestra Escolar de Ciencia & Tecnología · Impresión y Fabricación Digital</p>
+      <a href="#inicio" class="text-brand-cyan hover:underline">Volver Arriba ↑</a>
+    </div>
+  </footer>
+
+  <!-- GESTOR DE FOTOS Y PROYECTOS -->
+  <div id="imageManagerModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-brand-card border border-brand-line rounded-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+      <div class="p-6 border-b border-brand-line flex items-center justify-between">
+        <div>
+          <h3 class="font-heading font-bold text-xl text-white">Gestor de Fotos & Proyectos</h3>
+          <p class="text-xs text-slate-400 mt-1">Cargá las imágenes reales de los alumnos y modificá las fichas del trabajo.</p>
+        </div>
+        <button onclick="closeImageManager()" class="p-2 text-slate-400 hover:text-white text-xl">✕</button>
+      </div>
+
+      <div class="p-6 overflow-y-auto space-y-6">
+        <div class="p-4 rounded-xl border border-dashed border-brand-cyan/40 bg-brand-cyan/5 text-center">
+          <p class="text-xs font-bold text-brand-cyan uppercase tracking-wider mb-2">➕ Agregar Nuevo Proyecto / Foto</p>
+          <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="handleFileUpload(event)">
+          <button onclick="document.getElementById('fileInput').click()" class="px-4 py-2 bg-brand-cyan text-slate-950 rounded-lg text-xs font-bold hover:bg-cyan-300 transition-colors">
+            Seleccionar Foto desde el Dispositivo
+          </button>
+          <p class="text-[10px] text-slate-400 mt-2">Formatos aceptados: JPG, PNG, WEBP</p>
+        </div>
+
+        <div id="managedItemsList" class="space-y-4"></div>
+      </div>
+
+      <div class="p-4 border-t border-brand-line bg-slate-950/50 flex justify-between items-center">
+        <button onclick="resetDefaultData()" class="text-xs text-red-400 hover:underline">Restablecer datos por defecto</button>
+        <button onclick="closeImageManager()" class="px-5 py-2 bg-brand-cyan text-slate-950 rounded-lg text-xs font-bold">Guardar y Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DETALLE DE PROYECTO -->
+  <div id="projectDetailModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-brand-card border border-brand-line rounded-2xl w-full max-w-lg p-6 relative shadow-2xl">
+      <button onclick="closeProjectDetail()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl">✕</button>
+      <span id="modalCategory" class="px-2.5 py-1 rounded bg-brand-cyan/10 text-brand-cyan text-[10px] font-bold tracking-wider uppercase">CATEGORÍA</span>
+      <h3 id="modalTitle" class="font-heading font-extrabold text-2xl text-white mt-3 mb-2">Título del Proyecto</h3>
+      
+      <div class="aspect-video w-full rounded-xl overflow-hidden mb-4 bg-slate-900 border border-brand-line">
+        <img id="modalImg" src="" alt="" class="w-full h-full object-cover">
+      </div>
+
+      <p id="modalDesc" class="text-slate-300 text-xs leading-relaxed mb-4">Descripción extendida del proyecto.</p>
+
+      <div class="grid grid-cols-2 gap-4 pt-4 border-t border-brand-line text-xs">
+        <div>
+          <span class="text-slate-500 font-bold block text-[10px]">MATERIAL UTILIZADO:</span>
+          <span id="modalMaterial" class="text-brand-cyan font-medium">PLA Premium</span>
+        </div>
+        <div>
+          <span class="text-slate-500 font-bold block text-[10px]">AUTOR / EQUIPO:</span>
+          <span id="modalAuthor" class="text-white font-medium">Alumno Expo</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIGHTBOX FOTO COMPLETA -->
+  <div id="lightbox" class="fixed inset-0 z-50 bg-black/95 hidden flex flex-col items-center justify-center p-4">
+    <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white text-3xl font-bold hover:text-brand-cyan">✕</button>
+    <img id="lightboxImg" src="" alt="" class="max-h-[80vh] max-w-[90vw] object-contain rounded-lg border border-brand-line">
+    <p id="lightboxCaption" class="text-slate-300 text-sm mt-4 text-center font-heading font-medium"></p>
+  </div>
+
+  <script>
+    // Configuración Inicial de Datos
+    const defaultProjects = [
+      {
+        id: 'p1',
+        title: 'Lámpara Geométrica LED',
+        category: 'creatividad',
+        desc: 'Objeto de diseño impreso en PLA translúcido. Permite la difusión uniforme de luz LED interior.',
+        material: 'PLA Translúcido',
+        author: 'Sofía & Mateo (5to Año)',
+        img: 'https://images.unsplash.com/photo-1617802690992-15d93263d3a9?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'p2',
+        title: 'Soporte de Celular Regulable',
+        category: 'funcional',
+        desc: 'Mecanismo funcional con engranajes impresos en una sola pieza para ajuste de ángulo.',
+        material: 'PETG Resisitente',
+        author: 'Tomás González (6to Año)',
+        img: 'https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        id: 'p3',
+        title: 'Modelo de Célula 3D',
+        category: 'educacion',
+        desc: 'Recurso didáctico desmontable creado para las clases de Biología.',
+        material: 'PLA Multicolor',
+        author: 'Grupo Biología II',
+        img: 'https://images.unsplash.com/photo-1633464129147-777c5f8c5a0f?auto=format&fit=crop&w=800&q=80'
+      }
+    ];
+
+    let projects = JSON.parse(localStorage.getItem('expolab_projects')) || defaultProjects;
+    let isExpoMode = false;
+
+    // Videos por defecto para la Playlist de la Hero Section
+    const defaultVideos = [
+      { src: 'https://assets.mixkit.co/videos/preview/mixkit-3d-printer-printing-a-small-object-41121-large.mp4', title: 'IMPRESIÓN EN VIVO 1', sub: 'Modelado y fabricación por capas' },
+      { src: 'https://assets.mixkit.co/videos/preview/mixkit-working-with-a-3d-printer-41120-large.mp4', title: 'IMPRESIÓN EN VIVO 2', sub: 'Extrusión y detalle de filamento' }
+    ];
+    let playlist = defaultVideos;
+    let currentVideoIdx = 0;
+
+    function initVideoPlayer() {
+      const player = document.getElementById('heroVideoDisplay');
+      if (playlist.length > 0) {
+        player.src = playlist[currentVideoIdx].src;
+        document.getElementById('videoTitle').textContent = playlist[currentVideoIdx].title || `VIDEO ${currentVideoIdx + 1} / PLAYLIST`;
+        document.getElementById('videoSub').textContent = playlist[currentVideoIdx].sub || 'Fabricación en el aula';
+        player.play().catch(() => {});
+      }
+    }
+
+    function playNextVideo() {
+      if (playlist.length === 0) return;
+      currentVideoIdx = (currentVideoIdx + 1) % playlist.length;
+      initVideoPlayer();
+    }
+
+    function nextVideo() {
+      playNextVideo();
+    }
+
+    function prevVideo() {
+      if (playlist.length === 0) return;
+      currentVideoIdx = (currentVideoIdx - 1 + playlist.length) % playlist.length;
+      initVideoPlayer();
+    }
+
+    function handleVideoUpload(e) {
+      const files = Array.from(e.target.files);
+      if (!files.length) return;
+
+      const newVideos = files.map((file, i) => ({
+        src: URL.createObjectURL(file),
+        title: `VIDEO: ${file.name}`,
+        sub: 'Cargado localmente'
+      }));
+
+      playlist = newVideos;
+      currentVideoIdx = 0;
+      initVideoPlayer();
+    }
+
+    // Persistencia y Renderizado
+    function saveState() {
+      localStorage.setItem('expolab_projects', JSON.stringify(projects));
+      renderProjects();
+      renderGallery();
+      renderManagerList();
+    }
+
+    function renderProjects(filter = 'todos') {
+      const grid = document.getElementById('projectGrid');
+      grid.innerHTML = '';
+
+      const filtered = filter === 'todos' ? projects : projects.filter(p => p.category === filter);
+
+      filtered.forEach(p => {
+        const card = document.createElement('article');
+        card.className = 'bg-brand-card border border-brand-line rounded-2xl overflow-hidden hover:border-brand-cyan/40 transition-all flex flex-col group';
+        card.innerHTML = `
+          <div class="h-48 overflow-hidden relative">
+            <img src="${p.img}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <span class="absolute bottom-3 left-3 bg-brand-dark/80 backdrop-blur-md px-2.5 py-1 rounded text-[10px] font-bold text-brand-cyan uppercase">${p.category}</span>
+          </div>
+          <div class="p-5 flex-1 flex flex-col justify-between">
+            <div>
+              <h3 class="font-heading font-bold text-lg text-white mb-2">${p.title}</h3>
+              <p class="text-slate-400 text-xs line-clamp-2 leading-relaxed mb-4">${p.desc}</p>
+            </div>
+            <button onclick="openProjectDetail('${p.id}')" class="text-left text-brand-cyan font-bold text-xs hover:underline flex items-center gap-1">
+              Ver detalle ↗
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function filterProjects(category, e) {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('border-brand-cyan', 'bg-brand-cyan/10', 'text-brand-cyan');
+        btn.classList.add('border-brand-line', 'text-slate-400');
+      });
+      if (e && e.target) {
+        e.target.classList.remove('border-brand-line', 'text-slate-400');
+        e.target.classList.add('border-brand-cyan', 'bg-brand-cyan/10', 'text-brand-cyan');
+      }
+      renderProjects(category);
+    }
+
+    function renderGallery() {
+      const grid = document.getElementById('galleryGrid');
+      grid.innerHTML = '';
+
+      projects.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'relative aspect-square rounded-xl overflow-hidden border border-brand-line group cursor-pointer';
+        item.onclick = () => openLightbox(p.img, `${p.title} — ${p.author}`);
+        item.innerHTML = `
+          <img src="${p.img}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-end">
+            <p class="text-white text-xs font-bold font-heading">${p.title}</p>
+            <p class="text-slate-300 text-[10px]">${p.author}</p>
+          </div>
+        `;
+        grid.appendChild(item);
+      });
+    }
+
+    function renderManagerList() {
+      const list = document.getElementById('managedItemsList');
+      list.innerHTML = '';
+
+      projects.forEach((p, index) => {
+        const row = document.createElement('div');
+        row.className = 'p-4 rounded-xl bg-slate-900 border border-brand-line grid sm:grid-cols-4 gap-4 items-center';
+        row.innerHTML = `
+          <div class="h-20 rounded-lg overflow-hidden border border-brand-line relative">
+            <img src="${p.img}" class="w-full h-full object-cover">
+          </div>
+          <div class="sm:col-span-3 space-y-2">
+            <input type="text" value="${p.title}" onchange="updateProject(${index}, 'title', this.value)" class="w-full bg-brand-card border border-brand-line rounded px-2 py-1 text-xs text-white" placeholder="Título">
+            <div class="grid grid-cols-2 gap-2">
+              <input type="text" value="${p.author}" onchange="updateProject(${index}, 'author', this.value)" class="bg-brand-card border border-brand-line rounded px-2 py-1 text-xs text-slate-300" placeholder="Alumno/Equipo">
+              <select onchange="updateProject(${index}, 'category', this.value)" class="bg-brand-card border border-brand-line rounded px-2 py-1 text-xs text-slate-300">
+                <option value="creatividad" ${p.category === 'creatividad' ? 'selected' : ''}>Creatividad</option>
+                <option value="funcional" ${p.category === 'funcional' ? 'selected' : ''}>Funcional</option>
+                <option value="educacion" ${p.category === 'educacion' ? 'selected' : ''}>Educación</option>
+              </select>
+            </div>
+            <div class="flex justify-end gap-2 pt-1">
+              <button onclick="deleteProject(${index})" class="text-[10px] text-red-400 hover:underline">Eliminar</button>
+            </div>
+          </div>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    function updateProject(index, prop, value) {
+      projects[index][prop] = value;
+      saveState();
+    }
+
+    function deleteProject(index) {
+      projects.splice(index, 1);
+      saveState();
+    }
+
+    function handleFileUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const newProj = {
+          id: 'p_' + Date.now(),
+          title: 'Nuevo Proyecto ' + (projects.length + 1),
+          category: 'creatividad',
+          desc: 'Descripción del trabajo realizado por el alumno.',
+          material: 'PLA',
+          author: 'Alumno Expo',
+          img: event.target.result
+        };
+        projects.unshift(newProj);
+        saveState();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function toggleExpoMode() {
+      isExpoMode = !isExpoMode;
+      const btnText = document.getElementById('expoModeText');
+      btnText.textContent = isExpoMode ? "Modo Edición" : "Modo Presentación";
+
+      document.querySelectorAll('.edit-control').forEach(el => {
+        el.style.display = isExpoMode ? 'none' : 'flex';
+      });
+    }
+
+    function openImageManager() {
+      renderManagerList();
+      document.getElementById('imageManagerModal').classList.remove('hidden');
+    }
+    function closeImageManager() {
+      document.getElementById('imageManagerModal').classList.add('hidden');
+    }
+
+    function openProjectDetail(id) {
+      const p = projects.find(item => item.id === id);
+      if (!p) return;
+
+      document.getElementById('modalTitle').textContent = p.title;
+      document.getElementById('modalCategory').textContent = p.category;
+      document.getElementById('modalDesc').textContent = p.desc;
+      document.getElementById('modalMaterial').textContent = p.material;
+      document.getElementById('modalAuthor').textContent = p.author;
+      document.getElementById('modalImg').src = p.img;
+
+      document.getElementById('projectDetailModal').classList.remove('hidden');
+    }
+    function closeProjectDetail() {
+      document.getElementById('projectDetailModal').classList.add('hidden');
+    }
+
+    function openLightbox(src, caption) {
+      document.getElementById('lightboxImg').src = src;
+      document.getElementById('lightboxCaption').textContent = caption;
+      document.getElementById('lightbox').classList.remove('hidden');
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.add('hidden');
+    }
+
+    function resetDefaultData() {
+      projects = [...defaultProjects];
+      saveState();
+    }
+
+    function toggleMobileNav() {
+      document.getElementById('mobileNav').classList.toggle('hidden');
+    }
+
+    // Inicialización al cargar la página
+    document.addEventListener("DOMContentLoaded", () => {
+      renderProjects();
+      renderGallery();
+      initVideoPlayer();
+    });
+  </script>
+</body>
+</html>
