@@ -42,15 +42,10 @@
     ::-webkit-scrollbar-thumb:hover { background: #62e4ff; }
 
     .glow-cyan { box-shadow: 0 0 25px rgba(98, 228, 255, 0.25); }
-    .glow-purple { box-shadow: 0 0 25px rgba(156, 123, 255, 0.25); }
     .text-gradient {
       background: linear-gradient(100deg, #62e4ff, #a5b8ff 55%, #c09aff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-    }
-    .bg-glass {
-      background: rgba(13, 19, 34, 0.75);
-      backdrop-filter: blur(16px);
     }
     .orbit-animation { animation: spin 35s linear infinite; }
     @keyframes spin {
@@ -61,7 +56,8 @@
 </head>
 <body class="bg-brand-dark text-slate-100 font-sans min-h-screen selection:bg-brand-cyan/30 selection:text-brand-cyan overflow-x-hidden">
 
-  <header class="sticky top-0 z-40 w-full border-b border-brand-line bg-brand-dark/80 backdrop-blur-md transition-all">
+  <!-- ENCABEZADO -->
+  <header class="sticky top-0 z-40 w-full border-b border-brand-line bg-brand-dark/80 backdrop-blur-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       
       <a href="#inicio" class="flex items-center gap-3 group">
@@ -90,7 +86,7 @@
           📷 Subir / Editar Fotos
         </button>
 
-        <button id="mobileMenuBtn" onclick="toggleMobileNav()" class="md:hidden p-2 text-slate-300 hover:text-white" aria-label="Abrir Menú">
+        <button onclick="toggleMobileNav()" class="md:hidden p-2 text-slate-300 hover:text-white">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
         </button>
       </div>
@@ -105,6 +101,7 @@
   </header>
 
   <main id="inicio">
+    <!-- HERO SECTION -->
     <section class="relative min-h-[85vh] flex items-center justify-center pt-12 pb-20 overflow-hidden">
       <div class="absolute top-1/4 -left-32 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
       <div class="absolute bottom-10 -right-32 w-96 h-96 bg-brand-purple/20 rounded-full blur-3xl pointer-events-none"></div>
@@ -150,28 +147,35 @@
           </div>
         </div>
 
-        <!-- REPRODUCTOR DE VIDEOS / PLAYLIST DE LA HERO SECTION -->
+        <!-- REPRODUCTOR DE VIDEOS DERECHO -->
         <div class="relative flex justify-center items-center">
           <div class="absolute w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] border border-brand-cyan/20 rounded-full orbit-animation pointer-events-none"></div>
           
           <div class="relative z-10 w-full max-w-md aspect-[4/3] rounded-2xl p-2 bg-gradient-to-br from-brand-cyan/30 via-brand-purple/20 to-transparent border border-brand-cyan/40 shadow-2xl overflow-hidden group">
             
-            <!-- Video Player -->
             <video id="heroVideoDisplay" autoplay muted playsinline class="w-full h-full object-cover rounded-xl transition-all duration-500" onended="playNextVideo()"></video>
             
+            <div id="noVideoOverlay" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/90 text-center p-6 z-10">
+              <span class="text-4xl mb-3">🎬</span>
+              <p class="text-sm font-bold text-white mb-1">Cargá tus videos aquí</p>
+              <p class="text-xs text-slate-400 mb-4">Seleccioná los videos de tu compu para la expo</p>
+              <button onclick="document.getElementById('videoFileInput').click()" class="px-4 py-2 bg-brand-cyan text-slate-950 font-bold rounded-lg text-xs hover:bg-cyan-300 transition-all">
+                Cargar Mis Videos (.mp4)
+              </button>
+            </div>
+
             <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/80 via-transparent to-transparent pointer-events-none"></div>
             
-            <!-- Botón para Cargar Videos -->
-            <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/ogg" multiple class="hidden" onchange="handleVideoUpload(event)">
+            <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/mov,video/mkv" multiple class="hidden" onchange="handleVideoUpload(event)">
+            
             <button onclick="document.getElementById('videoFileInput').click()" class="edit-control absolute top-4 right-4 p-2 bg-brand-dark/80 hover:bg-brand-cyan hover:text-slate-950 text-white rounded-lg backdrop-blur-md text-xs font-bold transition-all shadow-md z-20">
-              🎬 Cargar Videos / Playlist
+              📁 Seleccionar Videos
             </button>
 
-            <!-- Indicador / Título del Video Actual -->
             <div class="absolute bottom-4 left-4 right-4 p-3 rounded-xl bg-brand-card/90 border border-brand-line backdrop-blur-md flex items-center justify-between z-20">
               <div>
-                <p id="videoTitle" class="text-xs font-bold text-brand-cyan">VIDEO 1 / PLAYLIST</p>
-                <p id="videoSub" class="text-xs text-slate-300">Procesos e Impresión en vivo</p>
+                <p id="videoTitle" class="text-xs font-bold text-brand-cyan">MIS VIDEOS DE LA EXPO</p>
+                <p id="videoSub" class="text-xs text-slate-300">Reproducción en bucle</p>
               </div>
               <div class="flex items-center gap-1 edit-control">
                 <button onclick="prevVideo()" class="p-1.5 bg-slate-800 hover:bg-brand-cyan hover:text-black rounded text-xs">◀</button>
@@ -183,6 +187,7 @@
       </div>
     </section>
 
+    <!-- PROYECTOS -->
     <section id="proyectos" class="py-20 border-t border-brand-line/50 relative">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
@@ -203,6 +208,7 @@
       </div>
     </section>
 
+    <!-- GALERÍA DE ALUMNOS -->
     <section id="galeria" class="py-20 bg-slate-950/50 border-t border-brand-line/50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-2xl mx-auto mb-12">
@@ -215,6 +221,7 @@
       </div>
     </section>
 
+    <!-- APLICACIONES -->
     <section id="aplicaciones" class="py-20 border-t border-brand-line/50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-2xl mx-auto mb-14">
@@ -248,6 +255,7 @@
       </div>
     </section>
 
+    <!-- PROCESO -->
     <section id="proceso" class="py-20 bg-slate-950/60 border-t border-brand-line/50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-2xl mx-auto mb-14">
@@ -295,7 +303,7 @@
     </div>
   </footer>
 
-  <!-- GESTOR DE FOTOS Y PROYECTOS -->
+  <!-- MODAL GESTOR DE FOTOS -->
   <div id="imageManagerModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="bg-brand-card border border-brand-line rounded-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
       <div class="p-6 border-b border-brand-line flex items-center justify-between">
@@ -313,14 +321,12 @@
           <button onclick="document.getElementById('fileInput').click()" class="px-4 py-2 bg-brand-cyan text-slate-950 rounded-lg text-xs font-bold hover:bg-cyan-300 transition-colors">
             Seleccionar Foto desde el Dispositivo
           </button>
-          <p class="text-[10px] text-slate-400 mt-2">Formatos aceptados: JPG, PNG, WEBP</p>
         </div>
 
         <div id="managedItemsList" class="space-y-4"></div>
       </div>
 
-      <div class="p-4 border-t border-brand-line bg-slate-950/50 flex justify-between items-center">
-        <button onclick="resetDefaultData()" class="text-xs text-red-400 hover:underline">Restablecer datos por defecto</button>
+      <div class="p-4 border-t border-brand-line bg-slate-950/50 flex justify-end">
         <button onclick="closeImageManager()" class="px-5 py-2 bg-brand-cyan text-slate-950 rounded-lg text-xs font-bold">Guardar y Cerrar</button>
       </div>
     </div>
@@ -360,13 +366,12 @@
   </div>
 
   <script>
-    // Configuración Inicial de Datos
     const defaultProjects = [
       {
         id: 'p1',
         title: 'Lámpara Geométrica LED',
         category: 'creatividad',
-        desc: 'Objeto de diseño impreso en PLA translúcido. Permite la difusión uniforme de luz LED interior.',
+        desc: 'Objeto de diseño impreso en PLA translúcido.',
         material: 'PLA Translúcido',
         author: 'Sofía & Mateo (5to Año)',
         img: 'https://images.unsplash.com/photo-1617802690992-15d93263d3a9?auto=format&fit=crop&w=800&q=80'
@@ -375,86 +380,62 @@
         id: 'p2',
         title: 'Soporte de Celular Regulable',
         category: 'funcional',
-        desc: 'Mecanismo funcional con engranajes impresos en una sola pieza para ajuste de ángulo.',
-        material: 'PETG Resisitente',
+        desc: 'Mecanismo funcional con engranajes impresos.',
+        material: 'PETG Resistente',
         author: 'Tomás González (6to Año)',
         img: 'https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&w=800&q=80'
-      },
-      {
-        id: 'p3',
-        title: 'Modelo de Célula 3D',
-        category: 'educacion',
-        desc: 'Recurso didáctico desmontable creado para las clases de Biología.',
-        material: 'PLA Multicolor',
-        author: 'Grupo Biología II',
-        img: 'https://images.unsplash.com/photo-1633464129147-777c5f8c5a0f?auto=format&fit=crop&w=800&q=80'
       }
     ];
 
     let projects = JSON.parse(localStorage.getItem('expolab_projects')) || defaultProjects;
     let isExpoMode = false;
-
-    // Videos por defecto para la Playlist de la Hero Section
-    const defaultVideos = [
-      { src: 'https://assets.mixkit.co/videos/preview/mixkit-3d-printer-printing-a-small-object-41121-large.mp4', title: 'IMPRESIÓN EN VIVO 1', sub: 'Modelado y fabricación por capas' },
-      { src: 'https://assets.mixkit.co/videos/preview/mixkit-working-with-a-3d-printer-41120-large.mp4', title: 'IMPRESIÓN EN VIVO 2', sub: 'Extrusión y detalle de filamento' }
-    ];
-    let playlist = defaultVideos;
+    let userPlaylist = [];
     let currentVideoIdx = 0;
 
-    function initVideoPlayer() {
-      const player = document.getElementById('heroVideoDisplay');
-      if (playlist.length > 0) {
-        player.src = playlist[currentVideoIdx].src;
-        document.getElementById('videoTitle').textContent = playlist[currentVideoIdx].title || `VIDEO ${currentVideoIdx + 1} / PLAYLIST`;
-        document.getElementById('videoSub').textContent = playlist[currentVideoIdx].sub || 'Fabricación en el aula';
-        player.play().catch(() => {});
-      }
-    }
-
-    function playNextVideo() {
-      if (playlist.length === 0) return;
-      currentVideoIdx = (currentVideoIdx + 1) % playlist.length;
-      initVideoPlayer();
-    }
-
-    function nextVideo() {
-      playNextVideo();
-    }
-
-    function prevVideo() {
-      if (playlist.length === 0) return;
-      currentVideoIdx = (currentVideoIdx - 1 + playlist.length) % playlist.length;
-      initVideoPlayer();
-    }
-
+    // Manejo de Carga de Videos
     function handleVideoUpload(e) {
       const files = Array.from(e.target.files);
       if (!files.length) return;
 
-      const newVideos = files.map((file, i) => ({
+      userPlaylist = files.map((file, i) => ({
         src: URL.createObjectURL(file),
-        title: `VIDEO: ${file.name}`,
-        sub: 'Cargado localmente'
+        title: file.name,
+        sub: `Video ${i + 1} de ${files.length}`
       }));
 
-      playlist = newVideos;
       currentVideoIdx = 0;
+      document.getElementById('noVideoOverlay').style.display = 'none';
       initVideoPlayer();
     }
 
-    // Persistencia y Renderizado
-    function saveState() {
-      localStorage.setItem('expolab_projects', JSON.stringify(projects));
-      renderProjects();
-      renderGallery();
-      renderManagerList();
+    function initVideoPlayer() {
+      const player = document.getElementById('heroVideoDisplay');
+      if (userPlaylist.length > 0) {
+        player.src = userPlaylist[currentVideoIdx].src;
+        document.getElementById('videoTitle').textContent = userPlaylist[currentVideoIdx].title;
+        document.getElementById('videoSub').textContent = userPlaylist[currentVideoIdx].sub;
+        player.muted = true;
+        player.play().catch(err => console.log("Error al reproducir:", err));
+      }
     }
 
+    function playNextVideo() {
+      if (userPlaylist.length === 0) return;
+      currentVideoIdx = (currentVideoIdx + 1) % userPlaylist.length;
+      initVideoPlayer();
+    }
+
+    function nextVideo() { playNextVideo(); }
+    function prevVideo() {
+      if (userPlaylist.length === 0) return;
+      currentVideoIdx = (currentVideoIdx - 1 + userPlaylist.length) % userPlaylist.length;
+      initVideoPlayer();
+    }
+
+    // Funciones de Proyectos y Galería
     function renderProjects(filter = 'todos') {
       const grid = document.getElementById('projectGrid');
       grid.innerHTML = '';
-
       const filtered = filter === 'todos' ? projects : projects.filter(p => p.category === filter);
 
       filtered.forEach(p => {
@@ -494,7 +475,6 @@
     function renderGallery() {
       const grid = document.getElementById('galleryGrid');
       grid.innerHTML = '';
-
       projects.forEach(p => {
         const item = document.createElement('div');
         item.className = 'relative aspect-square rounded-xl overflow-hidden border border-brand-line group cursor-pointer';
@@ -513,7 +493,6 @@
     function renderManagerList() {
       const list = document.getElementById('managedItemsList');
       list.innerHTML = '';
-
       projects.forEach((p, index) => {
         const row = document.createElement('div');
         row.className = 'p-4 rounded-xl bg-slate-900 border border-brand-line grid sm:grid-cols-4 gap-4 items-center';
@@ -540,32 +519,30 @@
       });
     }
 
-    function updateProject(index, prop, value) {
-      projects[index][prop] = value;
-      saveState();
-    }
+    function updateProject(index, prop, value) { projects[index][prop] = value; saveState(); }
+    function deleteProject(index) { projects.splice(index, 1); saveState(); }
 
-    function deleteProject(index) {
-      projects.splice(index, 1);
-      saveState();
+    function saveState() {
+      localStorage.setItem('expolab_projects', JSON.stringify(projects));
+      renderProjects();
+      renderGallery();
+      renderManagerList();
     }
 
     function handleFileUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
-
       const reader = new FileReader();
       reader.onload = function(event) {
-        const newProj = {
+        projects.unshift({
           id: 'p_' + Date.now(),
           title: 'Nuevo Proyecto ' + (projects.length + 1),
           category: 'creatividad',
-          desc: 'Descripción del trabajo realizado por el alumno.',
+          desc: 'Descripción del trabajo.',
           material: 'PLA',
           author: 'Alumno Expo',
           img: event.target.result
-        };
-        projects.unshift(newProj);
+        });
         saveState();
       };
       reader.readAsDataURL(file);
@@ -573,62 +550,37 @@
 
     function toggleExpoMode() {
       isExpoMode = !isExpoMode;
-      const btnText = document.getElementById('expoModeText');
-      btnText.textContent = isExpoMode ? "Modo Edición" : "Modo Presentación";
-
-      document.querySelectorAll('.edit-control').forEach(el => {
-        el.style.display = isExpoMode ? 'none' : 'flex';
-      });
+      document.getElementById('expoModeText').textContent = isExpoMode ? "Modo Edición" : "Modo Presentación";
+      document.querySelectorAll('.edit-control').forEach(el => el.style.display = isExpoMode ? 'none' : 'flex');
     }
 
-    function openImageManager() {
-      renderManagerList();
-      document.getElementById('imageManagerModal').classList.remove('hidden');
-    }
-    function closeImageManager() {
-      document.getElementById('imageManagerModal').classList.add('hidden');
-    }
+    function openImageManager() { renderManagerList(); document.getElementById('imageManagerModal').classList.remove('hidden'); }
+    function closeImageManager() { document.getElementById('imageManagerModal').classList.add('hidden'); }
 
     function openProjectDetail(id) {
       const p = projects.find(item => item.id === id);
       if (!p) return;
-
       document.getElementById('modalTitle').textContent = p.title;
       document.getElementById('modalCategory').textContent = p.category;
       document.getElementById('modalDesc').textContent = p.desc;
       document.getElementById('modalMaterial').textContent = p.material;
       document.getElementById('modalAuthor').textContent = p.author;
       document.getElementById('modalImg').src = p.img;
-
       document.getElementById('projectDetailModal').classList.remove('hidden');
     }
-    function closeProjectDetail() {
-      document.getElementById('projectDetailModal').classList.add('hidden');
-    }
+    function closeProjectDetail() { document.getElementById('projectDetailModal').classList.add('hidden'); }
 
     function openLightbox(src, caption) {
       document.getElementById('lightboxImg').src = src;
       document.getElementById('lightboxCaption').textContent = caption;
       document.getElementById('lightbox').classList.remove('hidden');
     }
-    function closeLightbox() {
-      document.getElementById('lightbox').classList.add('hidden');
-    }
+    function closeLightbox() { document.getElementById('lightbox').classList.add('hidden'); }
+    function toggleMobileNav() { document.getElementById('mobileNav').classList.toggle('hidden'); }
 
-    function resetDefaultData() {
-      projects = [...defaultProjects];
-      saveState();
-    }
-
-    function toggleMobileNav() {
-      document.getElementById('mobileNav').classList.toggle('hidden');
-    }
-
-    // Inicialización al cargar la página
     document.addEventListener("DOMContentLoaded", () => {
       renderProjects();
       renderGallery();
-      initVideoPlayer();
     });
   </script>
 </body>
