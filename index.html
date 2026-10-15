@@ -312,7 +312,7 @@
   <!-- LIGHTBOX FOTO COMPLETA -->
   <div id="lightbox" class="fixed inset-0 z-50 bg-black/95 hidden flex flex-col items-center justify-center p-4">
     <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white text-3xl font-bold hover:text-brand-cyan">✕</button>
-    <img id="lightboxImg" src="" alt="" class="max-h-[80vh] max-w-[90vw] object-contain rounded-lg border border-brand-line">
+    <img id="lightboxImg" src="" alt="" class="max-h-[100vh] max-w-[90vw] object-contain rounded-lg border border-brand-line">
     <p id="lightboxCaption" class="text-slate-300 text-sm mt-4 text-center font-heading font-medium"></p>
   </div>
 
@@ -324,24 +324,33 @@
     const projects = [
       {
         id: 'p1',
-        title: 'Lámpara Geométrica LED',
+        title: 'Anatomia Cuerpo Humano',
         category: 'creatividad',
-        desc: 'Objeto de diseño impreso en PLA translúcido con difusión de luz interior.',
-        material: 'PLA Translúcido',
-        author: 'Sofía & Mateo (5to Año)',
+        desc: 'Objeto de diseño impreso en PLA blanco con difusión objetivo de ver la fisiologia de la mano humana.',
+        material: 'PLA Blanco',
+        author: '(5to Año)',
         img: 'img/mano 3d.jpg'
       },
       {
         id: 'p2',
-        title: 'Soporte de Celular Regulable',
+        title: 'Soporte y exhibidor promo 2025 ',
         category: 'funcional',
-        desc: 'Mecanismo de engranajes impreso para ajuste de ángulo.',
-        material: 'PETG Resistente',
-        author: 'Tomás González (6to Año)',
+        desc: 'Soporte y exhibidor realizado por la promocion 25.',
+        material: 'PLA',
+        author: '6to Año',
         img: 'img/proyecto2.jpg'
       },
       {
         id: 'p3',
+        title: 'Mano Articulada',
+        category: 'educacion',
+        desc: 'Recurso didáctico desmontable creado para ver la aritulacion de las manos.',
+        material: 'PLA Amarillo',
+        author: 'Biología',
+        img: 'img/proyecto3.webp'
+      },
+      {
+      id: 'p4',
         title: 'Modelo de Célula 3D',
         category: 'educacion',
         desc: 'Recurso didáctico desmontable creado para Biología.',
@@ -397,10 +406,10 @@
         const card = document.createElement('article');
         card.className = 'bg-brand-card border border-brand-line rounded-2xl overflow-hidden hover:border-brand-cyan/40 transition-all flex flex-col group';
         card.innerHTML = `
-          <div class="h-48 overflow-hidden relative">
-            <img src="${p.img}" alt="${p.title}" onerror="this.src='https://images.unsplash.com/photo-1617802690992-15d93263d3a9?auto=format&fit=crop&w=800&q=80'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-            <span class="absolute bottom-3 left-3 bg-brand-dark/80 backdrop-blur-md px-2.5 py-1 rounded text-[10px] font-bold text-brand-cyan uppercase">${p.category}</span>
-          </div>
+          <div onclick="openLightbox('${p.img}', '${p.title} — ${p.author}')" class="h-64 overflow-hidden relative bg-slate-950/80 flex items-center justify-center p-2 cursor-pointer group/img">
+  <img src="${p.img}" alt="${p.title}" onerror="..." class="w-full h-full object-contain group-hover/img:scale-105 transition-transform duration-500">
+  <span class="absolute bottom-3 left-3 bg-brand-dark/80 backdrop-blur-md px-2.5 py-1 rounded text-[10px] font-bold text-brand-cyan uppercase">${p.category}</span>
+</div>
           <div class="p-5 flex-1 flex flex-col justify-between">
             <div>
               <h3 class="font-heading font-bold text-lg text-white mb-2">${p.title}</h3>
@@ -436,7 +445,7 @@
         item.className = 'relative aspect-square rounded-xl overflow-hidden border border-brand-line group cursor-pointer';
         item.onclick = () => openLightbox(p.img, `${p.title} — ${p.author}`);
         item.innerHTML = `
-          <img src="${p.img}" alt="${p.title}" onerror="this.src='https://images.unsplash.com/photo-1617802690992-15d93263d3a9?auto=format&fit=crop&w=800&q=80'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+          <img src="${p.img}" alt="${p.title}" onerror="..." class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-end">
             <p class="text-white text-xs font-bold font-heading">${p.title}</p>
             <p class="text-slate-300 text-[10px]">${p.author}</p>
