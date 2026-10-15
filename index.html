@@ -271,7 +271,39 @@
       </div>
     </section>
   </main>
+<!-- SECCIÓN VIDEOS DE AULA (CARRUSEL CINE) -->
+<section id="videos-aula" class="py-20 bg-slate-950 border-t border-brand-line/50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <span class="text-brand-cyan text-xs font-bold tracking-widest uppercase">REGISTRO AUDIOVISUAL</span>
+      <h2 class="font-heading font-extrabold text-3xl sm:text-4xl mt-2 text-white">Trabajo en el Aula</h2>
+      <p class="text-slate-400 text-sm mt-3">Reviví el proceso de diseño, modelado e impresión 3D a través de los videos de los alumnos.</p>
+    </div>
 
+    <div class="grid lg:grid-cols-3 gap-8 items-start">
+      <!-- REPRODUCTOR PRINCIPAL -->
+      <div class="lg:col-span-2 bg-brand-card border border-brand-line rounded-2xl p-3 shadow-2xl overflow-hidden">
+        <div class="aspect-video w-full rounded-xl overflow-hidden bg-slate-900 relative">
+          <video id="aulaVideoPlayer" controls muted class="w-full h-full object-cover"></video>
+        </div>
+        <div class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-t border-brand-line/40 mt-3">
+          <div>
+            <h3 id="aulaVideoTitle" class="font-heading font-bold text-lg text-white">Seleccioná un video</h3>
+            <p id="aulaVideoSub" class="text-xs text-slate-400">Toca en la lista lateral para reproducir</p>
+          </div>
+          <span class="px-3 py-1 bg-brand-cyan/10 border border-brand-cyan/30 text-brand-cyan text-[11px] font-bold rounded-lg self-start sm:self-auto">
+            📹 CAMARA
+          </span>
+        </div>
+      </div>
+
+      <!-- LISTA / CARRUSEL DE SELECCIÓN -->
+      <div class="space-y-3 max-h-[500px] overflow-y-auto pr-2" id="aulaPlaylistContainer">
+        <!-- Las miniaturas de los videos se cargan solas aquí -->
+      </div>
+    </div>
+  </div>
+</section>
   <footer class="border-t border-brand-line py-10 bg-brand-dark">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400">
       <div class="flex items-center gap-3">
@@ -476,7 +508,73 @@
     }
     function closeLightbox() { document.getElementById('lightbox').classList.add('hidden'); }
     function toggleMobileNav() { document.getElementById('mobileNav').classList.toggle('hidden'); }
+/* 
+  LISTA DE VIDEOS DEL AULA
+  Agregá acá los videos que tengas en la carpeta video/ (.mp4 o .mov)
+*/
+const aulaVideos = [
+  { id: 1, title: 'Diseño en Tinkercad', sub: '4to Año · Modelado 3D', src: 'video/aula1.mp4' },
+  { id: 2, title: 'Calibración de Impresoras', sub: '5to Año · Taller Técnico', src: 'video/aula2.mp4' },
+  { id: 3, title: 'Laminado y G-Code', sub: '6to Año · Software Slicer', src: 'video/aula3.mp4' },
+  { id: 4, title: 'Retiro de Soportes', sub: 'Alumnos en acción', src: 'video/aula4.mp4' },
+  { id: 5, title: 'Post-procesado y Pintado', sub: 'Acabado de piezas', src: 'video/aula5.mp4' },
+  { id: 6, title: 'Muestra Final de Prototipos', sub: 'Presentación en equipo', src: 'video/aula6.mp4' }
+];
 
+let currentAulaVideoIdx = 0;
+
+function renderAulaPlaylist() {
+  const container = document.getElementById('aulaPlaylistContainer');
+  if (!container) return;
+  container.innerHTML = '';
+
+  aulaVideos.forEach((vid, idx) => {
+    const btn = document.createElement('button');
+    const isActive = idx === currentAulaVideoIdx;
+    btn.onclick = () => loadAulaVideo(idx);
+    btn.className = `w-full text-left p-3.5 rounded-xl border transition-all flex items-center justify-between gap-3 ${
+      isActive 
+        ? 'bg-brand-cyan/10 border-brand-cyan text-white shadow-lg shadow-brand-cyan/10' 
+        : 'bg-brand-card/80 border-brand-line text-slate-400 hover:border-slate-500 hover:text-slate-200'
+    }`;
+
+    btn.innerHTML = `
+      <div class="flex items-center gap-3 overflow-hidden">
+        <div class="w-8 h-8 rounded-lg ${isActive ? 'bg-brand-cyan text-slate-950' : 'bg-slate-800 text-slate-300'} flex items-center justify-center font-bold text-xs shrink-0">
+          ${isActive ? '▶' : idx + 1}
+        </div>
+        <div class="truncate">
+          <p class="font-heading font-bold text-xs truncate ${isActive ? 'text-brand-cyan' : 'text-white'}">${vid.title}</p>
+          <p class="text-[10px] text-slate-400 truncate">${vid.sub}</p>
+        </div>
+      </div>
+      <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-900 text-slate-400 uppercase border border-brand-line shrink-0">
+        ${vid.src.endsWith('.mov') ? 'MOV' : 'MP4'}
+      </span>
+    `;
+    container.appendChild(btn);
+  });
+}
+
+function loadAulaVideo(index) {
+  currentAulaVideoIdx = index;
+  const vid = aulaVideos[index];
+  const player = document.getElementById('aulaVideoPlayer');
+  
+  player.src = vid.src;
+  document.getElementById('aulaVideoTitle').textContent = vid.title;
+  document.getElementById('aulaVideoSub').textContent = vid.sub;
+  
+  renderAulaPlaylist();
+  player.play().catch(err => console.log("Click para iniciar reproducción"));
+}
+
+// Inicializar cuando carga la página
+document.addEventListener("DOMContentLoaded", () => {
+  if (aulaVideos.length > 0) {
+    loadAulaVideo(0);
+  }
+});
     document.addEventListener("DOMContentLoaded", () => {
       renderProjects();
       renderGallery();
